@@ -14,7 +14,11 @@ class FTPClient:
         self.ftp = FTP()
         self.ftp.set_debuglevel(2)
         self.local_dir = self.config.local_env()
-        os.chdir(self.local_dir)
+        if os.path.notexists(self.local_dir):
+            os.mkdir(self.local_dir, 'wr')
+            os.chdir(self.local_dir)
+        else:
+            os.chdir(self.local_dir)
         print("current workspace: " + self.local_dir)
 
     def conn_jenkins(self):
