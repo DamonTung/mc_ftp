@@ -1,7 +1,7 @@
 from ftplib import FTP
 import Config
 import os
-import shutil
+import time
 import pysftp
 
 
@@ -14,10 +14,10 @@ class FTPClient:
         self.ftp = FTP()
         self.ftp.set_debuglevel(2)
         self.local_dir = self.config.local_env()
-        if os.path.notexists(self.local_dir):
-            os.mkdir(self.local_dir)
+        if os.path.exists(self.local_dir):
             os.chdir(self.local_dir)
         else:
+            os.mkdir(self.local_dir)
             os.chdir(self.local_dir)
         print("current workspace: " + self.local_dir)
 
@@ -37,11 +37,12 @@ class FTPClient:
         print ("start downloading...")
         self.ftp.retrbinary("RETR " + self.filename, file_handle.write, 1024)
         self.ftp.set_debuglevel(0)
-        self.ftp.close()
+        # self.ftp.close()
+        self.ftp.quit()
         print("download complete...")
         print("path: " + self.local_dir)
-        shutil.copyfile(self.filename, self.filename_local)
-        print("copy " + self.filename + "  to " + self.filename_local)
+        # shutil.copy2(self.filename, self.filename_local)
+
 
     def upload_to_201(self):
         mc_201 = self.config.host_201()
@@ -73,7 +74,15 @@ class FTPClient:
         print(mc_57)
         self.upload(hosts, username, password, port, remote_dir)
 
+    def rename_war(self):
+        if os.path.isfile(self.filename):
+            if os.path.exists(self.filename_local):
+                os.remove(self.filename_local)
+            os.rename(self.filename, self.filename_local)
+            print("copy " + self.filename + "  to " + self.filename_local)
+
     def upload(self, hosts, username, password, port, remote_dir):
+        # self.rename_war()
         with pysftp.Connection(host=hosts, username=username, password=password, port=port, default_path=remote_dir) as sftp:
             print("current path: " + sftp.pwd)
             sftp.put(self.filename_local)

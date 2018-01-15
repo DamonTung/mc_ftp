@@ -1,9 +1,12 @@
-import FtpClient
+import FTP_SFTP_Client
 
-ftp = FtpClient.FTPClient()
+ftp = FTP_SFTP_Client.FTPClient()
 print("download war from jenkins server ...")
 ftp.conn_jenkins()
+print("重命名 WAR 包.")
+ftp.rename_war()
 update_uat = input("\nupdate uat: [y/n]: ")
+
 if update_uat == 'y':
     # sftp = SFTPClient.SftpClient()
     update_57 = input("update 57 ? [y/n]: ")
