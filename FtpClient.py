@@ -15,7 +15,7 @@ class FTPClient:
         self.ftp.set_debuglevel(2)
         self.local_dir = self.config.local_env()
         if os.path.notexists(self.local_dir):
-            os.mkdir(self.local_dir, 'wr')
+            os.mkdir(self.local_dir)
             os.chdir(self.local_dir)
         else:
             os.chdir(self.local_dir)
