@@ -16,7 +16,7 @@ class FTPClient:
         self.ftp = FTP()
         self.ftp.set_debuglevel(2)
         self.local_dir = self.config.local_env()
-        self.logging = log.MyLogger()
+        self.logging = log.MyLogger().mylogging()
         if os.path.exists(self.local_dir):
             os.chdir(self.local_dir)
         else:
@@ -93,6 +93,7 @@ class FTPClient:
 
     def upload(self, hosts, username, password, port, remote_dir):
         # self.rename_war()
+        os.chdir(self.local_dir)
         with pysftp.Connection(host=hosts, username=username, password=password, port=port, default_path=remote_dir) as sftp:
             print("current path: " + sftp.pwd)
             self.logging.info("upload start ...")
