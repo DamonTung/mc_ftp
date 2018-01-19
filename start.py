@@ -3,7 +3,7 @@ import myLogger
 import makeWar
 import MySVN
 import changeFiles
-
+import time
 myLog = myLogger.MyLogger().mylogging()
 ftp = FTP_SFTP_Client.FTPClient()
 ''' ## 方式一 从jenkins 服务器拉取War包
@@ -20,17 +20,18 @@ myLog.info("准备上传UAT...")
 
 ''' 方式二 pysvn 拉取代码,本地打包
 '''
-
+start_time = time.time()
 target = 'uat'
-cf = changeFiles.ChangeFiles()
+path = 'D:\Data\menuCeter_web'
+cf = changeFiles.ChangeFiles(target,path)
 if target == 'uat':
     my_svn = MySVN.McSVN()
     my_svn.mc_update()
     cf.change_file_uat()
-elif target == 'prd':
+else:
     cf.change_file_prd()
 
-mw = makeWar.CrateWar()
+mw = makeWar.CrateWar(path)
 mw.make_war()
 
 update_uat = input("\nupdate uat: [y/n]: ")
@@ -56,3 +57,5 @@ else:
     myLog.info("no update")
     print("no update.")
 
+end_time = time.time()
+myLog.info("success, 用时 {}s".format(str(end_time - start_time)))

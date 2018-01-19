@@ -1,4 +1,4 @@
-import logging
+from SingleLogger import SingleLogger
 
 
 class MyLogger:
@@ -7,14 +7,5 @@ class MyLogger:
 
     @staticmethod
     def mylogging():
-
-        logging.basicConfig(level=logging.DEBUG,
-                            format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
-                            datefmt='%a, %d %b %Y %H:%M:%S',
-                            filename='D:/Data/YumWar/log/mc.log',
-                            filemode='w')
-        my_log = logging.getLogger("DT")
-        ch = logging.StreamHandler()
-        ch.setLevel(logging.DEBUG)
-        my_log.addHandler(ch)
+        my_log = SingleLogger.SingleLogger()
         return my_log

@@ -16,6 +16,7 @@ class CrateWar:
         os.chdir(self.path)
         os.system('mvn clean install')
         self.logging.info("created new war [mvn clean install]")
+        self.copy_to_backup()
 
     def copy_to_backup(self):
         os.chdir(self.path)
@@ -26,5 +27,5 @@ class CrateWar:
             os.mkdir(local_time)
             os.chdir(self.path)
             shutil.copy2(self.file_name, 'D:\Data\YumWar\\'+local_time + '\menuCenter.war')
-            self.logging.info("war 包备份至: " + os.getcwd() + "\\" + local_time)
+            self.logging.info("war 包备份至: " + 'D:\Data\YumWar\\' + local_time)
             shutil.copy2(self.file_name,'D:\Data\YumWar\\uat\\'+self.file_name)
