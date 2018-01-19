@@ -5,6 +5,7 @@ import time
 import pysftp
 import shutil
 import myLogger as log
+import zipfile
 
 
 class FTPClient:
@@ -17,6 +18,7 @@ class FTPClient:
         self.ftp.set_debuglevel(2)
         self.local_dir = self.config.local_env()
         self.logging = log.MyLogger().mylogging()
+        self.path = 'menuCenter/'  # 要进行压缩的文档目录
         if os.path.exists(self.local_dir):
             os.chdir(self.local_dir)
         else:
@@ -91,6 +93,33 @@ class FTPClient:
             print("copy " + self.filename + "  to " + self.filename_local)
             self.logging.info("copy " + self.filename + "  to " + self.filename_local)
 
+    def change_ESBClient_xml(self):
+        ebs_xml = 'ESBClient.xml'
+        os.chdir(self.local_dir)
+        with zipfile.ZipFile(self.filename_local) as zf:
+            zf.extractall('menuCenter')
+            zf.close()
+        shutil.copy2(ebs_xml, 'menuCenter/WEB-INF/classes/')
+        self.logging.info("文件替换: {} -> menuCenter/WEB-INF/classes/".format(ebs_xml))
+        try:
+            import zlib
+            compression = zipfile.ZIP_DEFLATED
+        except:
+            compression = zipfile.ZIP_STORED
+
+        z = zipfile.ZipFile(self.filename_local, mode="w", compression=compression)
+        try:
+            for dirpath, dirs, files in os.walk(self.path):
+                fpath = dirpath.replace(self.path, '')
+                fpath = fpath and fpath + os.sep or ''
+                for file in files:
+                    z_path = os.path.join(dirpath, file)
+                    z.write(z_path, fpath+file)
+            z.close()
+        except:
+            if z:
+                z.close()
+
     def upload(self, hosts, username, password, port, remote_dir):
         # self.rename_war()
         os.chdir(self.local_dir)
@@ -99,7 +128,6 @@ class FTPClient:
             self.logging.info("upload start ...")
             sftp.put(self.filename_local)
             self.logging.info("upload complete...")
-            print("上传成功!")
 
     def copy_to_backup(self):
         local_time = time.strftime('%Y-%m-%d %H-%M', time.localtime(time.time()))
@@ -109,4 +137,4 @@ class FTPClient:
             os.mkdir(local_time)
             shutil.copy2('./uat/menuCenter.war', local_time + '/menuCenter.war')
             print("war 包备份至: " + os.getcwd() + "\\" + local_time)
-            self.logging.info("war 包备份至: " + os.getcwd() + "\\" + local_time)
+            self.logging.info("[生产备用] war 包备份至: " + os.getcwd() + "\\" + local_time)
