@@ -13,7 +13,7 @@ class FTPClient:
     def __init__(self):
         self.filename = "menuCenter_web-0.0.1-SNAPSHOT.war"
         self.filename_local = "menuCenter.war"
-        self.config = Config.Env()
+        self.config = Config.Env(self)
         self.ftp = FTP()
         self.ftp.set_debuglevel(2)
         self.local_dir = self.config.local_env()

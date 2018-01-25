@@ -1,6 +1,6 @@
 import pysvn
 import myLogger
-import os, shutil
+import base64
 
 
 class McSVN:
@@ -20,8 +20,8 @@ class McSVN:
 
     def get_login(realm, username, may_save):
         retcode = True
-        username = 'dongguangzhen'
-        password = 'dongguangzhen'
+        username = base64.b64decode('ZG9uZ2d1YW5nemhlbg==')
+        password = base64.b64decode('ZG9uZ2d1YW5nemhlbg==')
         save = True
         return retcode, username, password, save
 
@@ -38,7 +38,7 @@ class McSVN:
         self.logging.info("updated.")
         headrev_after = self.client.info(self.mc_web_local).revision.number
         self.logging.info("updated Head Revision: " + str(headrev_after))
-        self.logging.info("updated records: " )
+        self.logging.info("updated records: ")
         self.logging.info(self.client.diff_summarize(
             url_or_path1=self.mc_web_remote, revision1=pysvn.Revision(pysvn.opt_revision_kind.number, headrev_before),
             url_or_path2=self.mc_web_remote, revision2=pysvn.Revision(pysvn.opt_revision_kind.number, headrev_after),

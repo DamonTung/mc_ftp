@@ -1,10 +1,13 @@
 import configparser
-import json
 
 
-class Env:
+class Env(object):
+    def __new__(self, cls, *args, **kwargs):
+        if not hasattr(self,'instance'):
+            self.instance = super(Env, self).__new__(self)
+            return self.instance
 
-    def __init__(self):
+    def __init__(self, cls):
         self.cp = configparser.ConfigParser()
         self.cp.read(".\config\config.ini")
         self.secs = self.cp.sections()
@@ -93,3 +96,19 @@ class Env:
         my_dict['remote_dir'] = self.cp.get('pro_zr_9', 'remote_dir')
         my_dict['log_dir'] = self.cp.get('pro_zr_9', 'log_dir')
         return my_dict
+
+    def svn_dxc(self):
+        my_dict = {}
+        my_dict['svn_path'] = self.cp.get("svn_dxc", 'svn_path')
+        my_dict['username'] = self.cp.get("svn_dxc", 'username')
+        my_dict['password'] = self.cp.get("svn_dxc", 'password')
+        return my_dict
+
+    def svn_yum(self):
+        my_dict = {}
+        my_dict['svn_path'] = self.cp.get('svn_yum', 'svn_path')
+        my_dict['username'] = self.cp.get('svn_yum', 'username')
+        my_dict['password'] = self.cp.get('svn_yum', 'password')
+        return my_dict
+
+

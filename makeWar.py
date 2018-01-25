@@ -4,9 +4,10 @@ import myLogger
 
 class CrateWar:
 
-    def __init__(self, path):
+    def __init__(self, path, target):
         self.name = "Make war"
         self.path = path
+        self.target_server = target
         self.logging = myLogger.MyLogger().mylogging()
         self.target_path = '\\target\menuCenter_web-0.0.1-SNAPSHOT.war'
         self.target_name = "menuCenter_web-0.0.1-SNAPSHOT.war"
@@ -14,9 +15,12 @@ class CrateWar:
 
     def make_war(self):
         os.chdir(self.path)
-        os.system('mvn clean install')
+        if self.target_server.lower() == 'prd':
+            os.system('mvn clean install')
+        else:
+            os.system('mvn clean install')
+            self.copy_to_backup()
         self.logging.info("created new war [mvn clean install]")
-        self.copy_to_backup()
 
     def copy_to_backup(self):
         os.chdir(self.path)
