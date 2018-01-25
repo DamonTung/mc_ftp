@@ -31,6 +31,7 @@ class ChangeFiles:
         # -- 需要手动更新至server 的配置文件
         XML_SPRING_JOBS_PRO = 'spring-jobs-pro.xml'
         XML_SPRING_SHIRO = 'spring-shiro.xml'
+        REVISION_LOG = 'revision.log'
 
         waiting_to_upload_prd = {XML_SPRING_JOBS_PRO, XML_SPRING_SHIRO}
         file_list = {FILE_ESBCLIENT_XML, FILE_LOG_BACK_XML, FILE_CONFIG_PRO_PROPERTIES}
@@ -38,6 +39,8 @@ class ChangeFiles:
         lib_list = {LIB_OAUTH_SDK, LIB_MESSAGECENTER_CLIENT}
         lib_list_remove = {LIB_MESSAGECENTER_CLIENT_REMOVE, LIB_REMOVE_TEST}
         os.chdir(self.path)
+        # -- 当前版本号
+        # shutil.copy2(REVISION_LOG, "D:\Data\YumWar\product\config\\bak\\" + REVISION_LOG)
         # --- 备份需要更新至server的配置文件
         for file in waiting_to_upload_prd:
             sourceFile = self.resource_path + file

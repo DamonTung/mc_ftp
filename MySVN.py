@@ -30,19 +30,31 @@ class McSVN:
         self.client.checkout(self.mc_web_remote, self.mc_web_local)
         self.logging.info("check out finished.")
 
-    def mc_update(self):
+    def mc_update(self, target):
         self.logging.info("update menuCenter_web")
-        headrev_before = self.client.info(self.mc_web_local).revision.number
-        self.logging.info("Current Head Revision: " + str(headrev_before))
-        self.client.update(self.mc_web_local)
-        self.logging.info("updated.")
-        headrev_after = self.client.info(self.mc_web_local).revision.number
-        self.logging.info("updated Head Revision: " + str(headrev_after))
-        self.logging.info("updated records: ")
-        self.logging.info(self.client.diff_summarize(
-            url_or_path1=self.mc_web_remote, revision1=pysvn.Revision(pysvn.opt_revision_kind.number, headrev_before),
-            url_or_path2=self.mc_web_remote, revision2=pysvn.Revision(pysvn.opt_revision_kind.number, headrev_after),
-            recurse=True, ignore_ancestry=False))
+        headrev_curr = self.client.info(self.mc_web_local).revision.number
+        self.logging.info("Current Head Revision: " + str(headrev_curr))
+        if target == 'uat':
+            self.client.update(self.mc_web_local)
+            headrev_after = self.client.info(self.mc_web_local).revision.number
+            self.logging.info("updated.")
+            self.logging.info("updated records: ")
+            self.logging.info(self.client.diff_summarize(
+                url_or_path1=self.mc_web_remote,
+                revision1=pysvn.Revision(pysvn.opt_revision_kind.number, headrev_curr),
+                url_or_path2=self.mc_web_remote,
+                revision2=pysvn.Revision(pysvn.opt_revision_kind.number, headrev_after),
+                recurse=True, ignore_ancestry=False))
+            self.logging.info("updated Head Revision: " + str(headrev_after))
+        elif target == 'prd':
+            self.logging.info("Revision: {},path: {}".format(headrev_curr, 'D:\Data\YumWar\product\config\\bak\\revision'))
+            rev = open('D:\Data\YumWar\product\config\\bak\\revision.log', 'w')
+            rev.write(str(headrev_curr))
+            rev.flush()
+            rev.close()
+        else:
+            self.logging.info("参数有误...")
+
 
     def get_changes(self):
         changes = self.client.status(self.mc_web_local)

@@ -4,6 +4,7 @@ import makeWar
 import MySVN
 import changeFiles
 import time
+from multiprocessing import Process as process
 
 
 def main(target_server):
@@ -30,11 +31,11 @@ myLog.info("准备上传UAT...")
     cf = changeFiles.ChangeFiles(target, path)
     if target == 'uat':
         myLog.info("target server is {}".format(target_server))
-        my_svn.mc_update()
+        my_svn.mc_update(target)
         cf.change_file_uat()
     elif target == 'prd':
         myLog.info("target server is {}".format(target_server))
-        my_svn.mc_update()
+        my_svn.mc_update(target)
         cf.change_file_prd()
     else:
         print("请确认打包环境,[uat] or [prd]")
@@ -47,21 +48,23 @@ myLog.info("准备上传UAT...")
         # sftp = SFTPClient.SftpClient()
         update_57 = input("update 57 ? [y/n]: ")
         if update_57.lower() == 'y':
-            ftp.upload_to_57()
-            myLog.info("57 updated.")
-            print("57 updated")
+            deploy_to_57(ftp, myLog)
+            # p_57 = process(target=deploy_to_57, args=(ftp, myLog))
+            # print("child process start..")
+            # p_57.start()
+            # print("child process end..")
         time.sleep(3)
         update_201 = input("update 201? [y/n]: ")
         if update_201.lower() == 'y':
-            ftp.upload_to_201()
-            myLog.info("201 updated.")
-            print("201 updated")
+            deploy_to_201(ftp,myLog)
+            # p_201 = process(target=deploy_to_201,args=(ftp, myLog))
+            # p_201.start()
         time.sleep(3)
         update_202 = input("update 202 ?[y/n]: ")
         if update_202.lower() == 'y':
-            ftp.upload_to_202()
-            myLog.info("202 updated.")
-            print("202 updated.")
+            deploy_to_202(ftp,myLog)
+            # p_202 = process(target=deploy_to_202,args=(ftp, myLog))
+            # p_202.start()
     else:
         myLog.info("no update")
         print("no update.")
@@ -69,6 +72,24 @@ myLog.info("准备上传UAT...")
     myLog.info("success, 用时 {}s".format(str(end_time - start_time)))
 
 
+def deploy_to_202(ftp, myLog):
+    ftp.upload_to_202()
+    myLog.info("202 updated.")
+    print("202 updated.")
+
+
+def deploy_to_201(ftp, myLog):
+    ftp.upload_to_201()
+    myLog.info("201 updated.")
+    print("201 updated")
+
+
+def deploy_to_57(ftp, myLog):
+    ftp.upload_to_57()
+    myLog.info("57 updated.")
+    print("57 updated")
+
+
 if __name__ == '__main__':
-    server = input('请输入要打包的对应Server [uat/prd]: ')
+    server = input('Deploy Server [uat/prd]: ')
     main(server.lower())
