@@ -1,6 +1,7 @@
 import  os, shutil
 import myLogger
 
+
 class ChangeFiles:
 
     def __init__(self, server, path):
