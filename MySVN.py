@@ -10,6 +10,8 @@ class McSVN:
         self.mc_web_local = 'D:\Data\menuCeter_web'
         self.client = pysvn.Client()
         self.logging = myLogger.MyLogger().mylogging()
+        self.svn_name = base64.b64decode('ZG9uZ2d1YW5nemhlbg==')
+        self.svn_pass = base64.b64decode('ZG9uZ2d1YW5nemhlbg==')
 
         def callback_get_login(realm, username, may_save):
             name = 'dongguangzhen'
@@ -46,14 +48,25 @@ class McSVN:
                 revision2=pysvn.Revision(pysvn.opt_revision_kind.number, headrev_after),
                 recurse=True, ignore_ancestry=False))
             self.logging.info("updated Head Revision: " + str(headrev_after))
-        elif target == 'prd':
+        elif target == 'pro':
             self.logging.info("Revision: {},path: {}".format(headrev_curr, 'D:\Data\YumWar\product\config\\bak\\revision'))
             rev = open('D:\Data\YumWar\product\config\\bak\\revision.log', 'w')
             rev.write(str(headrev_curr))
             rev.flush()
             rev.close()
         else:
-            self.logging.info("参数有误...")
+            self.client.update(self.mc_web_local)
+            headrev_after = self.client.info(self.mc_web_local).revision.number
+            self.logging.info("updated.")
+            self.logging.info("updated records: ")
+            self.logging.info(self.client.diff_summarize(
+                url_or_path1=self.mc_web_remote,
+                revision1=pysvn.Revision(pysvn.opt_revision_kind.number, headrev_curr),
+                url_or_path2=self.mc_web_remote,
+                revision2=pysvn.Revision(pysvn.opt_revision_kind.number, headrev_after),
+                recurse=True, ignore_ancestry=False))
+            self.logging.info("updated Head Revision: " + str(headrev_after))
+
 
 
     def get_changes(self):

@@ -29,20 +29,25 @@ myLog.info("准备上传UAT...")
     path = 'D:\Data\menuCeter_web'
     my_svn = MySVN.McSVN()
     cf = changeFiles.ChangeFiles(target, path)
+    myLog.info("target server is {}".format(target_server))
     if target == 'uat':
-        myLog.info("target server is {}".format(target_server))
         my_svn.mc_update(target)
-        cf.change_file_uat()
-    elif target == 'prd':
-        myLog.info("target server is {}".format(target_server))
+        # cf.change_file_uat()
+    elif target == 'pro':
+        # myLog.info("target server is {}".format(target_server))
         my_svn.mc_update(target)
         cf.change_file_prd()
+    elif target == 'mobile' or target == 'dev' or target =='mbrand':
+        # myLog.info("target server is {}".format(target_server))
+        my_svn.mc_update(target)
     else:
-        print("请确认打包环境,[uat] or [prd]")
+        print("请确认打包环境,[uat][pro][dev][mobile][mbrand][prepro]")
         myLog.info("输入参数 {} 有误.".format(target_server))
         exit(0)
     mw = makeWar.CrateWar(path, target)
     mw.make_war()
+    if target == 'pro' or target == 'mobile':
+        return
     update_uat = input("\nupdate uat: [y/n]: ")
     if update_uat.lower() == 'y':
         # sftp = SFTPClient.SftpClient()
@@ -62,7 +67,7 @@ myLog.info("准备上传UAT...")
         time.sleep(3)
         update_202 = input("update 202 ?[y/n]: ")
         if update_202.lower() == 'y':
-            deploy_to_202(ftp,myLog)
+            deploy_to_202(ftp, myLog)
             # p_202 = process(target=deploy_to_202,args=(ftp, myLog))
             # p_202.start()
     else:
@@ -91,5 +96,5 @@ def deploy_to_57(ftp, myLog):
 
 
 if __name__ == '__main__':
-    server = input('Deploy Server [uat/prd]: ')
+    server = input('Deploy Server [uat][pro][dev][mobile][mbrand][prepro]: ')
     main(server.lower())
