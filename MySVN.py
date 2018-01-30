@@ -36,7 +36,7 @@ class McSVN:
         self.logging.info("update menuCenter_web")
         headrev_curr = self.client.info(self.mc_web_local).revision.number
         self.logging.info("Current Head Revision: " + str(headrev_curr))
-        if target == 'uat':
+        if target in ('uat','prepro','mbrand'):
             self.client.update(self.mc_web_local)
             headrev_after = self.client.info(self.mc_web_local).revision.number
             self.logging.info("updated.")

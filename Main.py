@@ -37,7 +37,7 @@ myLog.info("准备上传UAT...")
         # myLog.info("target server is {}".format(target_server))
         my_svn.mc_update(target)
         cf.change_file_prd()
-    elif target == 'mobile' or target == 'dev' or target =='mbrand':
+    elif target == 'mobile' or target == 'dev':
         # myLog.info("target server is {}".format(target_server))
         my_svn.mc_update(target)
     else:

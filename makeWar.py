@@ -20,7 +20,7 @@ class CrateWar:
         if self.target_server.lower() == 'pro':
             # os.system('mvn clean install -P pro')
             self.copy_to_backup_prd()
-        elif self.target_server.lower == 'uat':
+        elif self.target_server.lower in ('uat', 'prepro', 'mbrand'):
             # os.system('mvn clean install -P uat')
             self.copy_to_backup()
         else:
@@ -34,7 +34,7 @@ class CrateWar:
         if not os.path.exists(local_time):
             os.mkdir(local_time)
             os.chdir(self.path)
-            if self.target_server.lower() == 'uat':
+            if self.target_server.lower() in ('uat','prepro','mbrand'):
                 shutil.copy2(self.file_name, 'D:\Data\YumWar\\'+local_time + '\menuCenter.war')
                 self.logging.info("war 包备份至: " + 'D:\Data\YumWar\\' + local_time)
                 shutil.copy2(self.file_name,'D:\Data\YumWar\\uat\\'+self.file_name)
