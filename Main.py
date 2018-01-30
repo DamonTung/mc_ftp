@@ -30,7 +30,7 @@ myLog.info("准备上传UAT...")
     my_svn = MySVN.McSVN()
     cf = changeFiles.ChangeFiles(target, path)
     myLog.info("target server is {}".format(target_server))
-    if target == 'uat':
+    if target in('uat', 'mbrand', 'prepro'):
         my_svn.mc_update(target)
         # cf.change_file_uat()
     elif target == 'pro':
@@ -48,8 +48,8 @@ myLog.info("准备上传UAT...")
     mw.make_war()
     if target == 'pro' or target == 'mobile':
         return
-    update_uat = input("\nupdate uat: [y/n]: ")
-    if update_uat.lower() == 'y':
+    update_uat = input("\ndeploy to server: [y/n]: ")
+    if update_uat.lower() == 'y' and target == 'uat':
         # sftp = SFTPClient.SftpClient()
         update_57 = input("update 57 ? [y/n]: ")
         if update_57.lower() == 'y':
@@ -59,12 +59,14 @@ myLog.info("准备上传UAT...")
             # p_57.start()
             # print("child process end..")
         time.sleep(3)
+    if update_uat.lower() == 'y' and target == 'mbrand':
         update_201 = input("update 201? [y/n]: ")
         if update_201.lower() == 'y':
             deploy_to_201(ftp,myLog)
             # p_201 = process(target=deploy_to_201,args=(ftp, myLog))
             # p_201.start()
         time.sleep(3)
+    if update_uat.lower() == 'y' and target == 'prepro':
         update_202 = input("update 202 ?[y/n]: ")
         if update_202.lower() == 'y':
             deploy_to_202(ftp, myLog)
