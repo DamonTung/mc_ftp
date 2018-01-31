@@ -1,6 +1,7 @@
 import pysvn
 import myLogger
 import base64
+import os
 
 
 class McSVN:
@@ -34,6 +35,8 @@ class McSVN:
 
     def mc_update(self, target):
         self.logging.info("update menuCenter_web")
+        if not os.path.exists(self.mc_web_local):
+            self.check_out()
         headrev_curr = self.client.info(self.mc_web_local).revision.number
         self.logging.info("Current Head Revision: " + str(headrev_curr))
         if target in ('uat','prepro','mbrand'):

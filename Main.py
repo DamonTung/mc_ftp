@@ -7,9 +7,8 @@ import time
 from multiprocessing import Process as process
 
 
-def main(target_server):
-    myLog = myLogger.MyLogger().mylogging()
-    ftp = FTP_SFTP_Client.FTPClient()
+def main(target_server,myLog,ftp):
+
     ''' ## 方式一 从jenkins 服务器拉取War包
 myLog.info("download war from jenkins server ...")
 ftp.conn_jenkins()
@@ -30,6 +29,14 @@ myLog.info("准备上传UAT...")
     my_svn = MySVN.McSVN()
     cf = changeFiles.ChangeFiles(target, path)
     myLog.info("target server is {}".format(target_server))
+    update_source = input("是否从SVN更新本地代码[Y/N]?")
+    if update_source.lower() == 'y':
+        myLog.info("====== 开始从SVN更新源码======")
+        my_svn.mc_update(target)
+        myLog.info("====== 源码更新完毕 ======")
+    if target == 'pro' or target == 'mobile':
+        cf.change_file_prd()
+    '''
     if target in('uat', 'mbrand', 'prepro'):
         my_svn.mc_update(target)
         # cf.change_file_uat()
@@ -44,6 +51,7 @@ myLog.info("准备上传UAT...")
         print("请确认打包环境,[uat][pro][dev][mobile][mbrand][prepro]")
         myLog.info("输入参数 {} 有误.".format(target_server))
         exit(0)
+        '''
     mw = makeWar.CrateWar(path, target)
     mw.make_war()
     if target == 'pro' or target == 'mobile':
@@ -58,14 +66,14 @@ myLog.info("准备上传UAT...")
             # print("child process start..")
             # p_57.start()
             # print("child process end..")
-        time.sleep(3)
+
     if update_uat.lower() == 'y' and target == 'mbrand':
         update_201 = input("update 201? [y/n]: ")
         if update_201.lower() == 'y':
             deploy_to_201(ftp,myLog)
             # p_201 = process(target=deploy_to_201,args=(ftp, myLog))
             # p_201.start()
-        time.sleep(3)
+
     if update_uat.lower() == 'y' and target == 'prepro':
         update_202 = input("update 202 ?[y/n]: ")
         if update_202.lower() == 'y':
@@ -98,5 +106,10 @@ def deploy_to_57(ftp, myLog):
 
 
 if __name__ == '__main__':
-    server = input('Deploy Server [uat][pro][dev][mobile][mbrand][prepro]: ')
-    main(server.lower())
+    myLog = myLogger.MyLogger().mylogging()
+    ftp = FTP_SFTP_Client.FTPClient()
+    servers = input('Deploy Server [uat][pro][dev][mobile][mbrand][prepro]: ').split()
+    myLog.info(servers)
+    for server in servers:
+        main(server.lower(), myLog, ftp)
+

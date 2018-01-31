@@ -24,7 +24,7 @@ class FTPClient:
         else:
             os.mkdir(self.local_dir)
             os.chdir(self.local_dir)
-        print("current workspace: " + self.local_dir)
+        # self.logging.info("current workspace: " + self.local_dir)
 
     def conn_jenkins(self):
         jenkins = self.config.host_jenkins()
@@ -137,4 +137,5 @@ class FTPClient:
             os.mkdir(local_time)
             shutil.copy2('./uat/menuCenter.war', local_time + '/menuCenter.war')
             print("war 包备份至: " + os.getcwd() + "\\" + local_time)
-            self.logging.info("[生产备用] war 包备份至: " + os.getcwd() + "\\" + local_time)
+            self.logging.info("war 包备份至: " + os.getcwd() + "\\" + local_time)
+
