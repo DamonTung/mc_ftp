@@ -35,6 +35,7 @@ myLog.info("准备上传UAT...")
         my_svn.mc_update(target)
         myLog.info("====== 源码更新完毕 ======")
     if target == 'pro' or target == 'mobile':
+        my_svn.mc_update(target)
         cf.change_file_prd()
     '''
     if target in('uat', 'mbrand', 'prepro'):

@@ -41,16 +41,7 @@ class McSVN:
         self.logging.info("Current Head Revision: " + str(headrev_curr))
         if target in ('uat','prepro','mbrand'):
             self.client.update(self.mc_web_local)
-            headrev_after = self.client.info(self.mc_web_local).revision.number
-            self.logging.info("updated.")
-            self.logging.info("updated records: ")
-            self.logging.info(self.client.diff_summarize(
-                url_or_path1=self.mc_web_remote,
-                revision1=pysvn.Revision(pysvn.opt_revision_kind.number, headrev_curr),
-                url_or_path2=self.mc_web_remote,
-                revision2=pysvn.Revision(pysvn.opt_revision_kind.number, headrev_after),
-                recurse=True, ignore_ancestry=False))
-            self.logging.info("updated Head Revision: " + str(headrev_after))
+            self.check_revision_after_update(headrev_curr)
         elif target == 'pro':
             self.logging.info("Revision: {},path: {}".format(headrev_curr, 'D:\Data\YumWar\product\config\\bak\\revision'))
             rev = open('D:\Data\YumWar\product\config\\bak\\revision.log', 'w')
@@ -59,18 +50,19 @@ class McSVN:
             rev.close()
         else:
             self.client.update(self.mc_web_local)
-            headrev_after = self.client.info(self.mc_web_local).revision.number
-            self.logging.info("updated.")
-            self.logging.info("updated records: ")
-            self.logging.info(self.client.diff_summarize(
-                url_or_path1=self.mc_web_remote,
-                revision1=pysvn.Revision(pysvn.opt_revision_kind.number, headrev_curr),
-                url_or_path2=self.mc_web_remote,
-                revision2=pysvn.Revision(pysvn.opt_revision_kind.number, headrev_after),
-                recurse=True, ignore_ancestry=False))
-            self.logging.info("updated Head Revision: " + str(headrev_after))
+            self.check_revision_after_update(headrev_curr)
 
-
+    def check_revision_after_update(self, headrev_curr):
+        headrev_after = self.client.info(self.mc_web_local).revision.number
+        self.logging.info("updated.")
+        self.logging.info("updated records: ")
+        self.logging.info(self.client.diff_summarize(
+            url_or_path1=self.mc_web_remote,
+            revision1=pysvn.Revision(pysvn.opt_revision_kind.number, headrev_curr),
+            url_or_path2=self.mc_web_remote,
+            revision2=pysvn.Revision(pysvn.opt_revision_kind.number, headrev_after),
+            recurse=True, ignore_ancestry=False))
+        self.logging.info("updated Head Revision: " + str(headrev_after))
 
     def get_changes(self):
         changes = self.client.status(self.mc_web_local)
